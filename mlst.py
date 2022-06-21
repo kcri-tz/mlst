@@ -187,7 +187,7 @@ def st_typing(st_profiles, allele_matches, loci_list):
     max_count = 0
     best_hit = ""
     for hit in st_hits:
-        if hit is not "None":
+        if hit != "None":
             if hit in st_hits_counter:
                 st_hits_counter[hit] += 1
             else:
@@ -311,6 +311,10 @@ parser.add_argument("-matrix", "--matrix",
                           position in each mapped template. Columns are: reference\
                           base, A count, C count, G count, T count, N count,\
                           - count.", dest="kma_matrix", action='store_true', default=False)
+parser.add_argument("-d", "--depth",
+                    help="The minimum required depth for a gene to be considered",
+                    type=float,
+                    default=5.0)
 
 
 #parser.add_argument("-c", "--coverage",
@@ -445,6 +449,15 @@ for hit, locus_hit in results[species].items():
     homol_seq = locus_hit["homo_string"]
     cigar     = extended_cigar(sbjct_aligns[species][hit], query_aligns[species][hit])
 
+    if file_format == "fastq":
+        depth = float(locus_hit["depth"])
+    else:
+        depth = args.depth
+
+    # Check for required depth
+    if args.depth > depth:
+        continue
+
     # Check for perfect hits
     if coverage == 100 and identity == 100:
         # If a perfect hit was already found the list more_perfect hits will exist this new hit is appended to this list
@@ -569,6 +582,7 @@ if extented_output:
         align_len = str(allele_info["align_len"])
         sbj_len = str(allele_info["sbj_len"])
         gaps = str(allele_info["gaps"])
+
 
         # Write alleles names with indications of imperfect hits
         if allele_name != "No hit found":
