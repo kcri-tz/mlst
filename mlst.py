@@ -2,6 +2,7 @@
 
 import os, sys, re, time, pprint, io, shutil
 import argparse, subprocess
+import tempfile
 
 from cgecore.alignment import extended_cigar
 from cgecore.blaster.blaster import Blaster
@@ -281,7 +282,6 @@ def text_table(headers, rows, empty_replace='-'):
    table = ("%s\n"*3)%('*'*(width+2), '\n'.join(table), '='*(width+2))
    return table
 
-
 parser = argparse.ArgumentParser(description="")
 # Arguments
 parser.add_argument("-i", "--infile",
@@ -311,6 +311,10 @@ parser.add_argument("-matrix", "--matrix",
                           position in each mapped template. Columns are: reference\
                           base, A count, C count, G count, T count, N count,\
                           - count.", dest="kma_matrix", action='store_true', default=False)
+parser.add_argument("-st", "--save_tmp",
+                    help="if set the tmp folder will be saved - "
+                         "deleted by default",
+                    action='store_true', default=False)
 parser.add_argument("-d", "--depth",
                     help="The minimum required depth for a gene to be considered",
                     type=float,
@@ -336,7 +340,8 @@ infile = args.infile
 outdir = os.path.abspath(args.outdir)
 species = args.species
 database = os.path.abspath(args.database)
-tmp_dir = os.path.abspath(args.tmp_dir)
+#creating unique tmp_dir
+tmp_dir = tempfile.mkdtemp(prefix='tmp_', dir=args.tmp_dir)
 # Check if method path is executable
 method_path = args.method_path
 extented_output = args.extented_output
@@ -411,7 +416,10 @@ elif file_format == "fasta":
     method_obj = Blaster(infile, [species], db_path, tmp_dir,
                          min_cov, threshold, method_path, cut_off=False)
 else:
-    sys.exit("Input file must be fastq or fasta format, not "+ file_format)
+    sys.exit("Input file must be fastq or fasta format, not " + file_format)
+
+if not args.save_tmp:
+    shutil.rmtree(tmp_dir)
 
 results      = method_obj.results
 query_aligns = method_obj.gene_align_query

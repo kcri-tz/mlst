@@ -85,20 +85,24 @@ Run Docker container
 docker run --rm -it \
        -v $MLST_DB:/database \
        -v $(pwd):/workdir \
-       mlst -i [INPUTFILE] -o . -s [SPECIES] [-x]
+       mlst -i [INPUTFILE] -o . -s [SPECIES] [-x] [-st]
 ```
 
-When running the docker file you have to mount 2 directory: 
+When running the docker file you have to mount 2 directory:
  1. mlst_db (MLST database) downloaded from bitbucket
- 2. An output/input folder from where the input file can be reached and an output files can be saved. 
-Here we mount the current working directory (using $pwd) and use this as the output directory, 
+ 2. An output/input folder from where the input file can be reached and an output files can be saved.
+Here we mount the current working directory (using $pwd) and use this as the output directory,
 the input file should be reachable from this directory as well.
 
--i INPUTFILE	input file (fasta or fastq) relative to pwd 
--s SPECIES 	species origin of input file
--o OUTDIR	outpur directory relative to pwd
--x 		extended output. Will create an extented output
+-i INPUTFILE   input file (fasta or fastq) relative to pwd.
 
+-s SPECIES 	species origin of input file.
+
+-o OUTDIR	outpur directory relative to pwd.
+
+-x 		extended output. Will create an extented output.
+
+-st     save temp_folder. Will save the temporary folder.
 
 ## Web-server
 
@@ -120,8 +124,8 @@ PMID: 22238442         doi: 10.1128/JCM.06094-11
 References
 =======
 
-1. Camacho C, Coulouris G, Avagyan V, Ma N, Papadopoulos J, Bealer K, Madden TL. BLAST+: architecture and applications. BMC Bioinformatics 2009; 10:421. 
-2. Clausen PTLC, Aarestrup FM, Lund O. Rapid and precise alignment of raw reads against redundant databases with KMA. BMC Bioinformatics 2018; 19:307. 
+1. Camacho C, Coulouris G, Avagyan V, Ma N, Papadopoulos J, Bealer K, Madden TL. BLAST+: architecture and applications. BMC Bioinformatics 2009; 10:421.
+2. Clausen PTLC, Aarestrup FM, Lund O. Rapid and precise alignment of raw reads against redundant databases with KMA. BMC Bioinformatics 2018; 19:307.
 
 License
 =======
